@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "../api/axios";
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -11,18 +12,36 @@ function Signup() {
   });
 
   const handleChange = (e) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
 
-    // You can add your actual signup logic/API call here
-    console.log("Form Submitted:", formData);
+    // Get role from URL or localStorage fallback
+    const role =
+      new URLSearchParams(window.location.search).get("role") ||
+      localStorage.getItem("selectedRole") ||
+      "user";
+
+    try {
+      const res = await axios.post("/users/register", {
+        username: `${formData.firstName} ${formData.lastName}`,
+        email: formData.emailOrPhone,
+        password: formData.password,
+        role: role,
+      });
+
+      alert("Registration successful! Please login.");
+      window.location.href = "/login"; // or use useNavigate
+    } catch (err) {
+      alert(err.response?.data?.message || "Signup failed");
+    }
   };
 
   return (
@@ -98,22 +117,19 @@ function Signup() {
           <button
             type="submit"
             className="btn btn-primary w-100 fw-bold shadow-sm"
-            style={{
-              transition: "0.3s ease",
-            }}
-            onMouseOver={(e) =>
-              (e.target.style.backgroundColor = "#004080")
-            }
-            onMouseOut={(e) =>
-              (e.target.style.backgroundColor = "")
-            }
+            style={{ transition: "0.3s ease" }}
+            onMouseOver={(e) => (e.target.style.backgroundColor = "#004080")}
+            onMouseOut={(e) => (e.target.style.backgroundColor = "")}
           >
             Sign Up
           </button>
 
           <p className="text-center mt-3">
             Already have an account?{" "}
-            <Link to="/login" className="text-decoration-none text-primary fw-bold">
+            <Link
+              to="/login"
+              className="text-decoration-none text-primary fw-bold"
+            >
               Login here
             </Link>
           </p>

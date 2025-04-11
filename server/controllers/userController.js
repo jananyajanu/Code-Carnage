@@ -65,3 +65,31 @@ exports.getUserProfile = async (req, res) => {
     res.status(404).json({ message: "User not found" });
   }
 };
+
+// @desc    Update user role
+// @route   POST /api/users/role
+// @access  Public or Private (depending on your use case)
+exports.updateUserRole = async (req, res) => {
+  const { userId, role } = req.body;
+
+  try {
+    const user = await User.findByIdAndUpdate(userId, { role }, { new: true });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      message: "Role updated successfully",
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to update role" });
+  }
+};

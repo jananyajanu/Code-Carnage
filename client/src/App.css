@@ -36,3 +36,7 @@
     transform: rotate(360deg);
   }
 }
+/* hover effect into your App.css: */
+.btn-primary:hover {
+  background-color: #004080 !important;
+}

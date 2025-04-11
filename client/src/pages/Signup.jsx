@@ -1,15 +1,20 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "../api/axios";
 
 function Signup() {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    emailOrPhone: "",
+    username: "",
+    email: "",
     password: "",
     confirmPassword: "",
   });
+
+  const location = useLocation();
+  const role =
+    new URLSearchParams(location.search).get("role") ||
+    localStorage.getItem("selectedRole") ||
+    "user";
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -23,22 +28,16 @@ function Signup() {
       return;
     }
 
-    // Get role from URL or localStorage fallback
-    const role =
-      new URLSearchParams(window.location.search).get("role") ||
-      localStorage.getItem("selectedRole") ||
-      "user";
-
     try {
       const res = await axios.post("/users/register", {
-        username: `${formData.firstName} ${formData.lastName}`,
-        email: formData.emailOrPhone,
+        username: formData.username,
+        email: formData.email,
         password: formData.password,
         role: role,
       });
 
       alert("Registration successful! Please login.");
-      window.location.href = "/login"; // or use useNavigate
+      window.location.href = "/login";
     } catch (err) {
       alert(err.response?.data?.message || "Signup failed");
     }
@@ -47,30 +46,19 @@ function Signup() {
   return (
     <div className="container mt-5" style={{ maxWidth: "500px" }}>
       <div className="card shadow p-4 rounded-4">
-        <h3 className="text-center mb-4 text-primary">Create an Account</h3>
+        <h3 className="text-center mb-4 text-primary">
+          Signup as {role.charAt(0).toUpperCase() + role.slice(1)}
+        </h3>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label">First Name</label>
+            <label className="form-label">Username</label>
             <input
               type="text"
               className="form-control border-primary shadow-sm"
-              name="firstName"
-              value={formData.firstName}
+              name="username"
+              value={formData.username}
               onChange={handleChange}
-              placeholder="Enter your first name"
-              required
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label">Last Name</label>
-            <input
-              type="text"
-              className="form-control border-primary shadow-sm"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              placeholder="Enter your last name"
+              placeholder="Enter your username"
               required
             />
           </div>
@@ -78,10 +66,10 @@ function Signup() {
           <div className="mb-3">
             <label className="form-label">Email or Phone</label>
             <input
-              type="text"
+              type="email"
               className="form-control border-primary shadow-sm"
-              name="emailOrPhone"
-              value={formData.emailOrPhone}
+              name="email"
+              value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email or phone number"
               required

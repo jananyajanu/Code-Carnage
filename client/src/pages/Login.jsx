@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "../api/axios";
 
 function Login() {
-  const [loginForm, setLoginForm] = useState({ username: "", password: "" });
+  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -12,8 +12,8 @@ function Login() {
       const res = await axios.post("/users/login", loginForm);
       alert("Login successful!");
 
-      localStorage.setItem("userToken", res.data.token); // if you're using JWT
-      window.location.href = "/feed"; // or wherever
+      localStorage.setItem("userToken", res.data.token); // store JWT
+      window.location.href = "/Homepage"; // redirect after login
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
     }
@@ -27,10 +27,11 @@ function Login() {
           <input
             type="text"
             className="form-control"
-            placeholder="Username"
-            name="username"
+            placeholder="Email"
+            name="email"
+            value={loginForm.email}
             onChange={(e) =>
-              setLoginForm({ ...loginForm, username: e.target.value })
+              setLoginForm({ ...loginForm, email: e.target.value })
             }
             required
           />
@@ -41,6 +42,7 @@ function Login() {
             className="form-control"
             placeholder="Password"
             name="password"
+            value={loginForm.password}
             onChange={(e) =>
               setLoginForm({ ...loginForm, password: e.target.value })
             }

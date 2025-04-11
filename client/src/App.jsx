@@ -6,6 +6,8 @@ import Signup from "./pages/Signup";
 import Landing from "./pages/LandingPage";
 import PrivateRoute from "./components/PrivateRoute";
 import RoleSelection from "./pages/RoleSelection"; // adjust the path as needed
+import Homepage from "./pages/HomePage";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (
@@ -14,6 +16,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/select-role" element={<RoleSelection />} />
+      <Route path="/Homepage" element={<Homepage />} />
       <Route
         path="/feed"
         element={

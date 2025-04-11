@@ -1,32 +1,59 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import "./Login.css";
 
-function Login() {
-  const [loginForm, setLoginForm] = useState({ username: "", password: "" });
+const Login = () => {
+  const navigate = useNavigate();
+  const [credentials, setCredentials] = useState({
+    username: "",
+    password: ""
+  });
 
-  const handleLogin = (e) => {
+  const handleChange = (e) => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    // Your login logic
-    console.log("Login", loginForm);
+    // Replace with your login logic here (API call or validation)
+    console.log("Logging in with:", credentials);
+    navigate("/"); // redirect to homepage on successful login
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center">Login</h2>
-      <form className="p-4 shadow-sm border rounded" onSubmit={handleLogin}>
-        <div className="mb-3">
-          <input type="text" className="form-control" placeholder="Username" name="username" onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })} required />
-        </div>
-        <div className="mb-3">
-          <input type="password" className="form-control" placeholder="Password" name="password" onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })} required />
-        </div>
-        <button type="submit" className="btn btn-success w-100">Login</button>
-        <div className="mt-3 text-center">
-          <Link to="/forgot-password">Forgot Password?</Link>
-        </div>
-      </form>
+    <div className="login-container">
+      <div className="login-box">
+        <h2>Welcome Back</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={credentials.username}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={credentials.password}
+            onChange={handleChange}
+            required
+          />
+          <div className="login-actions">
+            <Link to="/forgot-password" className="forgot-link">
+              Forgot Password?
+            </Link>
+          </div>
+          <button type="submit" className="login-btn">Login</button>
+        </form>
+        <p className="signup-text">
+          Don't have an account? <Link to="/select-role">Sign up</Link>
+        </p>
+      </div>
     </div>
   );
-}
+};
 
 export default Login;

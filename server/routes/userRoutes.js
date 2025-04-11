@@ -1,10 +1,18 @@
-// server/routes/userRoutes.js
 const express = require("express");
+const {
+  registerUser,
+  loginUser,
+  getUserProfile,
+} = require("../controllers/userController");
+const { protect } = require("../middleware/authMiddleware");
+
 const router = express.Router();
 
-// Example route
-router.get("/", (req, res) => {
-  res.send("User route works!");
-});
+// Public Routes
+router.post("/register", registerUser);
+router.post("/login", loginUser);
+
+// Protected Route
+router.get("/profile", protect, getUserProfile);
 
 module.exports = router;

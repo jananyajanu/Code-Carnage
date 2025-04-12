@@ -8,13 +8,13 @@ const {
 const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
-const storage = multer.memoryStorage();
+const storage = multer.memoryStorage(); // In-memory storage for videos
 const upload = multer({ storage });
 
 // Upload video (protected)
 router.post("/upload", protect, upload.single("video"), uploadVideo);
 
-// Publicly accessible
+// Publicly accessible routes for fetching videos
 router.get("/", getAllVideos);
 router.get("/:id", getVideoById);
 

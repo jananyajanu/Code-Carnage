@@ -7,6 +7,8 @@ import Landing from "./pages/LandingPage";
 import PrivateRoute from "./components/PrivateRoute";
 import RoleSelection from "./pages/RoleSelection"; // adjust the path as needed
 import Homepage from "./pages/HomePage";
+import UploadVideo from "./pages/UploadVideo";
+import ProfilePanel from "./pages/ProfilePanel";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
@@ -17,6 +19,8 @@ function App() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/select-role" element={<RoleSelection />} />
       <Route path="/Homepage" element={<Homepage />} />
+      <Route path="/UploadVideo" element={<UploadVideo />} />
+      <Route path="/ProfilePanel" element={<ProfilePanel />} />
       <Route
         path="/feed"
         element={

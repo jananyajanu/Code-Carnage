@@ -93,3 +93,11 @@ exports.updateUserRole = async (req, res) => {
     res.status(500).json({ message: "Failed to update role" });
   }
 };
+
+module.exports.updateUserPoints = async (userId, points) => {
+  try {
+    await User.findByIdAndUpdate(userId, { $inc: { points: points } });
+  } catch (err) {
+    console.log("Error updating points:", err);
+  }
+};

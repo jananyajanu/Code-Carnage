@@ -1,26 +1,14 @@
 import React from "react";
-import { Container, Nav, Navbar, Dropdown } from "react-bootstrap";
+import { Container, Nav, Navbar } from "react-bootstrap";
 import logo from "../assets/logo.jpg"; // Make sure this path is correct
 import "./HomePage.css"; // Update to correct relative path
+import { Link } from "react-router-dom";
 
 function HomePage() {
   return (
     <div className="home-container position-relative text-white">
       {/* Dim Logo Background */}
       <img src={logo} alt="Logo" className="background-logo" />
-
-      {/* Top Dropdown */}
-      <div className="position-absolute top-0 start-0 p-3 z-3">
-        <Dropdown>
-          <Dropdown.Toggle variant="light" size="sm">
-            Profile
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item href="#/profile">My Info</Dropdown.Item>
-            <Dropdown.Item href="#/logout">Logout</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
 
       {/* Weekly Challenge Section */}
       <Container className="mt-5 pt-5 text-center">
@@ -43,11 +31,10 @@ function HomePage() {
       {/* Bottom NavBar */}
       <Navbar fixed="bottom" bg="dark" variant="dark">
         <Nav className="w-100 d-flex justify-content-around">
-          <Nav.Link href="#">Home</Nav.Link>
-          <Nav.Link href="#">Post</Nav.Link>
-          <Nav.Link href="#">Challenges</Nav.Link>
-          <Nav.Link href="#">Leaderboard</Nav.Link>
-          <Nav.Link href="#">Profile</Nav.Link>
+          <Link to="/Homepage">Home</Link>
+          <Link to="/UploadVideo">Post</Link>
+          <Link to="/select-role">Challenges</Link>
+          <Link to="/ProfilePanel">ProfilePanel</Link>
         </Nav>
       </Navbar>
     </div>

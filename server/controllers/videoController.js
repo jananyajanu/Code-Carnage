@@ -7,10 +7,18 @@ const cloudinary = require("../config/cloudinary");
 exports.uploadVideo = async (req, res) => {
   const { title, description, topic } = req.body;
 
+  // Ensure the necessary fields are present
+  if (!title || !description || !topic) {
+    return res
+      .status(400)
+      .json({ message: "Title, description, and topic are required" });
+  }
+
   try {
     if (!req.file)
       return res.status(400).json({ message: "No video file uploaded" });
 
+    // Upload video to Cloudinary
     cloudinary.uploader
       .upload_stream(
         { resource_type: "video", folder: "climate-videos" },
@@ -18,23 +26,28 @@ exports.uploadVideo = async (req, res) => {
           if (error)
             return res
               .status(500)
-              .json({ message: "Cloudinary upload failed" });
+              .json({ message: "Cloudinary upload failed", error });
 
-          const newVideo = await Video.create({
+          // Create new video entry in the database
+          const newVideo = new Video({
             title,
             description,
             topic,
-            videoUrl: result.secure_url,
+            videoUrl: result.secure_url, // Cloudinary URL of the uploaded video
             uploadedBy: req.user._id,
           });
 
+          // Save the new video in the database
+          await newVideo.save();
+
+          // Return the newly created video data
           res.status(201).json(newVideo);
         }
       )
       .end(req.file.buffer);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Video upload failed" });
+    console.error("Video upload error:", err);
+    res.status(500).json({ message: "Video upload failed", error: err });
   }
 };
 
@@ -43,10 +56,12 @@ exports.uploadVideo = async (req, res) => {
 // @access  Public
 exports.getAllVideos = async (req, res) => {
   try {
+    // Fetch all videos with their uploader details
     const videos = await Video.find().populate("uploadedBy", "username role");
     res.json(videos);
   } catch (err) {
-    res.status(500).json({ message: "Failed to fetch videos" });
+    console.error("Error fetching videos:", err);
+    res.status(500).json({ message: "Failed to fetch videos", error: err });
   }
 };
 
@@ -62,6 +77,7 @@ exports.getVideoById = async (req, res) => {
     if (!video) return res.status(404).json({ message: "Video not found" });
     res.json(video);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching video" });
+    console.error("Error fetching video:", err);
+    res.status(500).json({ message: "Error fetching video", error: err });
   }
 };

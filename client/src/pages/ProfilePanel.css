@@ -1,13 +1,13 @@
-/* ProfilePanel.css */
+/* ProfilePanel.css
 
 /* General container styling */
-.container {
+/* .container {
   max-width: 1200px;
   margin: 0 auto;
 }
 
 /* User info card styling */
-.card {
+/* .card {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -34,7 +34,7 @@
 }
 
 /* Leaderboard tab navigation styling */
-.nav-tabs {
+/* .nav-tabs {
   justify-content: center;
 }
 
@@ -56,7 +56,7 @@
 }
 
 /* Dropdown filter styling */
-.dropdown-toggle {
+/* .dropdown-toggle {
   font-size: 1rem;
   padding: 10px 15px;
   border-radius: 25px;
@@ -65,29 +65,29 @@
 
 .dropdown-menu {
   min-width: 150px;
-}
+} */
 
 /* Row for leaderboard user cards */
-.row {
+/* .row {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
-}
+} */
 
 /* User card styling */
-.card.mb-3 {
+/* .card.mb-3 {
   width: 250px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+} 
 
 .card-body {
   padding: 15px;
 }
 
 /* Add hover effects to user cards */
-.card:hover {
+/* .card:hover {
   transform: translateY(-5px);
   transition: transform 0.2s ease-in-out;
 }
@@ -97,4 +97,4 @@
   width: 80px;
   height: 80px;
   object-fit: cover;
-}
+} */ 

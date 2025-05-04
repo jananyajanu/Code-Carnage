@@ -1,42 +1,41 @@
 import React from "react";
-import { Container, Nav, Navbar } from "react-bootstrap";
-import logo from "../assets/logo.jpg"; // Make sure this path is correct
-import "./HomePage.css"; // Update to correct relative path
+import logo from "../assets/logo.jpg";
 import { Link } from "react-router-dom";
 
 function HomePage() {
   return (
-    <div className="home-container position-relative text-white">
-      {/* Dim Logo Background */}
-      <img src={logo} alt="Logo" className="background-logo" />
+    <div className="min-h-screen pb-24 relative overflow-x-hidden bg-slate-900 text-white px-4 sm:px-8">
+      <img
+        src={logo}
+        alt="Logo"
+        className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-5 w-3/4 sm:w-2/3 z-0"
+      />
 
-      {/* Weekly Challenge Section */}
-      <Container className="mt-5 pt-5 text-center">
-        <h2 className="fw-bold mb-3">🌱 Weekly Challenge</h2>
-        <p className="lead">
-          This week: Reduce plastic usage! Share your story 🌍
+      <div className="pt-28 text-center relative z-10">
+        <h2 className="font-bold text-3xl mb-3">
+          <span role="img" aria-label="seedling">🌱</span> Weekly Challenge
+        </h2>
+        <p className="text-lg">
+          This week: <span className="text-emerald-400 font-semibold">Reduce plastic usage!</span> Share your story{" "}
+          <span role="img" aria-label="earth">🌍</span>
         </p>
-      </Container>
+      </div>
 
-      {/* About Section */}
-      <Container className="about-section mt-5 p-4">
-        <h4>About Us</h4>
-        <p>
-          Our platform empowers students and schools to share 60-second
-          sustainability stories — from recycling tips to eco initiatives. Join
-          the movement to make climate literacy fun and impactful!
+      <div className="bg-slate-800 rounded-xl mt-10 p-6 relative z-10 max-w-3xl mx-auto shadow-lg">
+        <h3 className="text-2xl font-semibold mb-2">About Us</h3>
+        <p className="text-base leading-relaxed">
+          Our platform empowers students and schools to share 60-second sustainability stories — from recycling tips to eco initiatives.
+          Join the movement to make climate literacy fun and impactful!
         </p>
-      </Container>
+      </div>
 
-      {/* Bottom NavBar */}
-      <Navbar fixed="bottom" bg="dark" variant="dark">
-        <Nav className="w-100 d-flex justify-content-around">
-          <Link to="/Homepage">Home</Link>
-          <Link to="/UploadVideo">Post</Link>
-          <Link to="/select-role">Challenges</Link>
-          <Link to="/ProfilePanel">ProfilePanel</Link>
-        </Nav>
-      </Navbar>
+      {/* Bottom Navigation Footer */}
+      <div className="fixed bottom-0 left-0 right-0 bg-slate-800 text-white flex justify-around items-center py-3 shadow-inner z-20">
+        <Link to="/" className="hover:text-emerald-400 font-medium">Home</Link>
+        <Link to="/challenges" className="hover:text-emerald-400 font-medium">Challenges</Link>
+        <Link to="/videofeed" className="hover:text-emerald-400 font-medium">VideoFeed</Link>
+        <Link to="/profile" className="hover:text-emerald-400 font-medium">Profile</Link>
+      </div>
     </div>
   );
 }

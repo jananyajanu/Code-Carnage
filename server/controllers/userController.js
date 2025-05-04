@@ -59,10 +59,19 @@ exports.loginUser = async (req, res) => {
 // @access  Private
 exports.getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("-password");
-    res.json(user);
+    const user = await User.findById(req.user._id).populate("videos").select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      name: user.username,
+      email: user.email,
+      videos: user.videos,
+    });
   } catch (err) {
-    res.status(404).json({ message: "User not found" });
+    res.status(500).json({ message: "Server error while fetching profile" });
   }
 };
 
@@ -94,6 +103,9 @@ exports.updateUserRole = async (req, res) => {
   }
 };
 
+// @desc    Update user points
+// @route   POST /api/users/points
+// @access  Private
 module.exports.updateUserPoints = async (userId, points) => {
   try {
     await User.findByIdAndUpdate(userId, { $inc: { points: points } });

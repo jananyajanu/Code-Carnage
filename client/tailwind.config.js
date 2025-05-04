@@ -6,9 +6,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#2e7d32',     // 60% — Deep sustainable green
-        secondary: '#a5d6a7',   // 30% — Soft mint green
-        accent: '#ffcc80',      // 10% — Warm contrast (like peach/orange)
+        primary: '#e6f4ea',        
+        secondary: '#34a853',      
+        accent: '#1b5e20',         
+        
       },
     },
   },

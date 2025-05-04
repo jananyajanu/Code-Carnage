@@ -26,16 +26,21 @@ app.get("/", (req, res) => {
 });
 
 // Your routes (plug these in once you’re ready)
-app.use("/api/users", userRoutes);
+app.use("/api/user", userRoutes);  // Add this line to use the userRoutes
 app.use("/api/videos", videoRoutes);
 app.use("/api/challenge", challengeRoutes);
 
-// Example of using updateUserPoints function (if required)
-app.post("/api/update-points", (req, res) => {
+// Example of using updateUserPoints function (with async/await)
+app.post("/api/update-points", async (req, res) => {
   const { userId, points } = req.body;
-  updateUserPoints(userId, points)
-    .then(() => res.status(200).send("Points updated successfully"))
-    .catch((err) => res.status(500).send("Error updating points"));
+
+  try {
+    await updateUserPoints(userId, points);
+    res.status(200).send("Points updated successfully");
+  } catch (err) {
+    console.error("Error updating points:", err);
+    res.status(500).send("Error updating points");
+  }
 });
 
 // Start server

@@ -2,9 +2,15 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 
-// Register a new user
-exports.registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+// Generate JWT
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+};
+
+// @desc    Register new user
+// @route   POST /api/users/register
+const registerUser = async (req, res) => {
+  const { username, email, password, role } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
@@ -36,8 +42,9 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-// Login user
-exports.loginUser = async (req, res) => {
+// @desc    Login user
+// @route   POST /api/users/login
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -63,8 +70,10 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-// Get profile
-exports.getUserProfile = async (req, res) => {
+// @desc    Get user profile
+// @route   GET /api/users/profile
+// @access  Private
+const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password");
     res.json(user);
@@ -74,8 +83,10 @@ exports.getUserProfile = async (req, res) => {
   }
 };
 
-// Update role
-exports.updateUserRole = async (req, res) => {
+// @desc    Update user role
+// @route   POST /api/users/role
+// @access  Public or Private (depending on your use case)
+const updateUserRole = async (req, res) => {
   const { userId, role } = req.body;
 
   try {
@@ -92,16 +103,28 @@ exports.updateUserRole = async (req, res) => {
   }
 };
 
-// Update points via route
-exports.updateUserPoints = async (req, res) => {
-  const { points } = req.body;
-
+// @desc    Update user points
+// @route   POST /api/users/updatePoints
+// @access  Private
+const updateUserPoints = async (req, res) => {
   try {
-    await User.findByIdAndUpdate(req.user._id, { $inc: { points } });
-    res.status(200).json({ message: "Points updated successfully" });
+    const userId = req.user._id;
+    const { points } = req.body;
+
+    if (!points) {
+      return res.status(400).json({ message: "Points are required" });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $inc: { points: points } },
+      { new: true }
+    );
+
+    res.status(200).json({ message: "Points updated", user });
   } catch (err) {
-    console.log("Error updating points:", err);
-    res.status(500).json({ message: "Server error updating points" });
+    console.error("Error updating points:", err);
+    res.status(500).json({ message: "Server error", error: err });
   }
 };
 
@@ -113,4 +136,11 @@ exports.updateUserPointsInDatabase = async (userId, points) => {
     console.error("Error in updateUserPointsInDatabase:", err);
     throw err;
   }
+}
+module.exports = {
+  registerUser,
+  loginUser,
+  getUserProfile,
+  updateUserRole,
+  updateUserPoints, // ✅ Now it’s actually defined
 };

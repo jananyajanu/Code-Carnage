@@ -26,4 +26,5 @@ router.post("/role", protect, isAdmin, updateUserRole); // Added isAdmin check f
 router.get("/profile", protect, getUserProfile); // Get user profile
 router.patch("/updatePoints", protect, updateUserPoints); // PATCH for updating points (typically used for partial updates)
 
-module.exports = router;
+// Export router and the updateUserPoints function together
+module.exports = { userRoutes: router, updateUserPoints };

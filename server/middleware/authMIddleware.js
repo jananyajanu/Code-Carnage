@@ -2,8 +2,17 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 exports.protect = async (req, res, next) => {
+<<<<<<< HEAD
   // Checking if the token is provided in the Authorization header
   const token = req.headers.authorization?.split(" ")[1];
+=======
+  if (process.env.NODE_ENV === "development") {
+    req.user = { _id: "6637fbc5d8d8a3fa2a123456" }; // mock user ID
+    return next();
+  }
+
+  let token = req.headers.authorization?.split(" ")[1];
+>>>>>>> 9323cb84865879232572952c81a6c0dabf2ef415
 
   if (!token) {
     return res.status(401).json({ message: "Not authorized, no token" });

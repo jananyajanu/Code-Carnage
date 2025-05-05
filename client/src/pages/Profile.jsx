@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Board from "../components/Leaderboard/Board"; // Adjust path if needed
+import PointsInfo from "../components/PointsInfo"; // Make sure the path is correct
+
 
 const Profilepage = () => {
   const [userData, setUserData] = useState(null);
@@ -97,11 +99,11 @@ const Profilepage = () => {
         )}
 
         {activeSection === "points" && (
-          <div className="mt-10 text-center text-accent">
-            <h3 className="text-2xl font-semibold mb-4">📊 Points Distribution</h3>
-            <p>This section will explain how points are awarded. Content coming soon!</p>
+          <div className="mt-10">
+            <PointsInfo />
           </div>
         )}
+
       </div>
     </div>
   );

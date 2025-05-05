@@ -3,11 +3,6 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
 
-// Importing the routes and the updateUserPoints function
-const { router: userRoutes, updateUserPoints } = require("./routes/userRoutes");
-const videoRoutes = require("./routes/videoRoutes");
-const challengeRoutes = require("./routes/challengeRoutes");
-
 // Load environment variables from .env
 dotenv.config();
 
@@ -20,17 +15,28 @@ const app = express();
 app.use(cors());
 app.use(express.json()); // Parse incoming JSON
 
+// Importing routes
+const userRoutes = require("./routes/userRoutes");
+const videoRoutes = require("./routes/videoRoutes");
+const challengeRoutes = require("./routes/challengeRoutes");
+const { updateUserPoints } = require("./controllers/userController");
+
+
+// Import updateUserPoints from controller
+const { updateUserPoints } = require("./controllers/userController"); // ✅ Correct source
+
 // Test route
 app.get("/", (req, res) => {
   res.send("🌍 Climate Platform Backend is running...");
 });
 
-// Your routes (plug these in once you’re ready)
-app.use("/api/user", userRoutes);  // Add this line to use the userRoutes
+// API Routes
+app.use("/api/user", userRoutes);
 app.use("/api/videos", videoRoutes);
 app.use("/api/challenge", challengeRoutes);
+app.use("/api/leaderboard", leaderboardRoutes); // ✅ Optional, but useful
 
-// Example of using updateUserPoints function (with async/await)
+// Update points endpoint
 app.post("/api/update-points", async (req, res) => {
   const { userId, points } = req.body;
 

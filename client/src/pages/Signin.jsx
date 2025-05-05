@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -9,66 +10,70 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const res = await fetch("/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Login failed");
-        return;
-      }
-
-      // Save token to localStorage
-      localStorage.setItem("userInfo", JSON.stringify(data));
-      navigate("/profile"); // redirect to profile page
+      const res = await axios.post("/api/users/login", { email, password });
+      localStorage.setItem("userToken", res.data.token);
+      navigate("/home");
     } catch (err) {
-      console.error(err);
-      setError("Something went wrong. Please try again.");
+      setError("Invalid email or password");
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 border rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">Sign In</h2>
-      {error && <p className="text-red-500">{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label>Email</label>
-          <input
-            type="email"
-            className="w-full p-2 border rounded"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label>Password</label>
-          <input
-            type="password"
-            className="w-full p-2 border rounded"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-        >
+    <div className="flex items-center justify-center min-h-screen bg-green-100">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-semibold text-green-800 mb-6 text-center">
           Sign In
-        </button>
-      </form>
+        </h2>
+
+        {error && (
+          <div className="mb-4 text-sm text-red-600 bg-red-100 p-2 rounded">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-gray-700">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded text-green-700 bg-green-50 focus:outline-none focus:ring focus:ring-green-200"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded text-green-700 bg-green-50 focus:outline-none focus:ring focus:ring-green-200"
+            />
+            <div className="text-right mt-1">
+              <Link to="" className="text-sm text-green-700 hover:underline">
+                Forgot password?
+              </Link>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
+          >
+            Sign In
+          </button>
+        </form>
+
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Not registered?{" "}
+          <Link to="/signup" className="text-green-700 font-medium hover:underline">
+            Sign up here
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

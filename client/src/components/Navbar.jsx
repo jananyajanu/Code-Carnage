@@ -4,9 +4,9 @@ import logo from "../assets/logo.jpg"; // Adjust path as needed
 
 function Navbar({ children }) {
   return (
-    <div className="bg-gray-100 text-gray-800 min-h-[80px] relative">
+    <div className="bg-primary text-gray-800 min-h-[80px] relative">
       {/* 🌱 Top Navigation Bar */}
-      <header className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 h-20">
+      <header className="fixed top-0 left-0 right-0 bg-primary shadow-md z-50 h-20">
         <div className="flex justify-between items-center h-full px-4">
           {/* Logo */}
           <Link to="/" className="flex items-center">
@@ -32,12 +32,12 @@ function Navbar({ children }) {
       <main className="flex-grow px-4 pb-16 ">{children}</main>
 
       {/* ✅ Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow z-50">
+      <nav className="fixed bottom-0 left-0 right-0 bg-primary border-t border-gray-300 shadow z-50">
         <div className="flex justify-around items-center h-16">
           {/* Home */}
           <Link
             to="/"
-            className="flex flex-col items-center text-gray-500 hover:text-green-600"
+            className="flex flex-col items-center text-accent hover:text-secondary"
           >
             <i className="fas fa-home text-xl mb-1"></i>
             <span className="text-xs">Home</span>
@@ -46,7 +46,7 @@ function Navbar({ children }) {
           {/* Post */}
           <Link
             to="/post"
-            className="flex flex-col items-center text-gray-500 hover:text-green-600"
+            className="flex flex-col items-center text-accent hover:text-secondary"
           >
             <i className="fas fa-edit text-xl mb-1"></i>
             <span className="text-xs">Post</span>
@@ -55,7 +55,7 @@ function Navbar({ children }) {
           {/* Challenges */}
           <Link
             to="/challenges"
-            className="flex flex-col items-center text-gray-500 hover:text-green-600"
+            className="flex flex-col items-center text-accent hover:text-secondary"
           >
             <i className="fas fa-tasks text-xl mb-1"></i>
             <span className="text-xs">Challenges</span>
@@ -64,7 +64,7 @@ function Navbar({ children }) {
           {/* Profile */}
           <Link
             to="/profile"
-            className="flex flex-col items-center text-gray-500 hover:text-green-600"
+            className="flex flex-col items-center text-accent hover:text-secondary"
           >
             <i className="fas fa-user text-xl mb-1"></i>
             <span className="text-xs">Profile</span>

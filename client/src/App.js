@@ -4,12 +4,14 @@ import PrivateRoute from "./components/PrivateRoute.jsx";
 import Homepage from "./pages/HomePage.jsx";
 import UploadVideo from "./pages/UploadVideo.jsx";
 import Profile from "./pages/Profile.jsx"; // ⬅️ Import Profile page
+import SignIn from "./pages/Signin.jsx";
 
-function App() {
+function App() {      
   return (
     <div className="bg-gray-900 text-white">
       <Routes>
         <Route path="/" element={<Homepage />} />
+        <Route path="/signin" element={<SignIn />} />
         
         
         <Route path="/UploadVideo" element={<UploadVideo />} />

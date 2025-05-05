@@ -1,40 +1,77 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import logo from "../assets/logo.jpg"; // Adjust path as needed
 
-function Navbar() {
+function Navbar({ children }) {
   return (
-    <nav className="bg-gray-800 p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link className="text-3xl font-bold text-green-500" to="/">
-          🌱 Climate Platform
-        </Link>
-        <button className="lg:hidden text-white" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="lg:flex lg:items-center lg:w-auto w-full hidden lg:block" id="nav">
-          <ul className="flex space-x-4">
-            <li>
-              <Link className="text-white hover:text-green-500 px-3" to="/">Home</Link>
-            </li>
-            <li>
-              <Link className="text-white hover:text-green-500 px-3" to="/upload">Upload</Link>
-            </li>
-            <li>
-              <Link className="text-white hover:text-green-500 px-3" to="/feed">Feed</Link>
-            </li>
-            <li>
-              <Link className="text-white hover:text-green-500 px-3" to="/leaderboard">Leaderboard</Link>
-            </li>
-            <li>
-              <Link className="text-white hover:text-green-500 px-3" to="/admin">Admin</Link>
-            </li>
-            <li>
-              <Link className="text-white hover:text-green-500 px-3" to="/login">Login</Link>
-            </li>
-          </ul>
+    <div className="bg-gray-100 text-gray-800 min-h-[80px] relative">
+      {/* 🌱 Top Navigation Bar */}
+      <header className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 h-20">
+        <div className="flex justify-between items-center h-full px-4">
+          {/* Logo */}
+          <Link to="/" className="flex items-center">
+            <img
+              src={logo}
+              alt="EcoTales Logo"
+              className="h-16 w-auto object-contain"
+              loading="lazy"
+            />
+          </Link>
+
+          {/* Message Icon */}
+          <Link to="/messages"
+          className="text-gray-600 hover:text-green-600"
+          aria-label="Messages"
+          >
+          <i className="fas fa-comment-dots fa-2x"></i>
+          </Link>
         </div>
-      </div>
-    </nav>
+      </header>
+
+      {/* 📄 Page Content */}
+      <main className="flex-grow px-4 pb-16 ">{children}</main>
+
+      {/* ✅ Bottom Navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow z-50">
+        <div className="flex justify-around items-center h-16">
+          {/* Home */}
+          <Link
+            to="/"
+            className="flex flex-col items-center text-gray-500 hover:text-green-600"
+          >
+            <i className="fas fa-home text-xl mb-1"></i>
+            <span className="text-xs">Home</span>
+          </Link>
+
+          {/* Post */}
+          <Link
+            to="/post"
+            className="flex flex-col items-center text-gray-500 hover:text-green-600"
+          >
+            <i className="fas fa-edit text-xl mb-1"></i>
+            <span className="text-xs">Post</span>
+          </Link>
+
+          {/* Challenges */}
+          <Link
+            to="/challenges"
+            className="flex flex-col items-center text-gray-500 hover:text-green-600"
+          >
+            <i className="fas fa-tasks text-xl mb-1"></i>
+            <span className="text-xs">Challenges</span>
+          </Link>
+
+          {/* Profile */}
+          <Link
+            to="/profile"
+            className="flex flex-col items-center text-gray-500 hover:text-green-600"
+          >
+            <i className="fas fa-user text-xl mb-1"></i>
+            <span className="text-xs">Profile</span>
+          </Link>
+        </div>
+      </nav>
+    </div>
   );
 }
 

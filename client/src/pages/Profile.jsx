@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import Board from "../components/Leaderboard/Board"; // Adjust path if needed
 
 const Profilepage = () => {
   const [userData, setUserData] = useState(null);
-  const navigate = useNavigate();
+  const [activeSection, setActiveSection] = useState("none"); // 'leaderboard' or 'points'
 
   useEffect(() => {
     const dummyData = {
@@ -31,46 +31,30 @@ const Profilepage = () => {
           👤 User Profile
         </h2>
 
+        {/* User Info */}
         <div className="mb-6 space-y-2 text-lg">
-          <p>
-            <span className="font-semibold">Name:</span> {userData.name}
-          </p>
-          <p>
-            <span className="font-semibold">Email:</span> {userData.email}
-          </p>
-          <p>
-            <span className="font-semibold">Level:</span> {userData.level}
-          </p>
-          <p>
-            <span className="font-semibold">Points Earned:</span>{" "}
-            {userData.points}
-          </p>
+          <p><span className="font-semibold">Name:</span> {userData.name}</p>
+          <p><span className="font-semibold">Email:</span> {userData.email}</p>
+          <p><span className="font-semibold">Level:</span> {userData.level}</p>
+          <p><span className="font-semibold">Points Earned:</span> {userData.points}</p>
 
           <div className="w-full bg-gray-300 rounded-full h-4 mt-2">
-            <div
-              className="bg-accent h-4 rounded-full"
-              style={{ width: `${Math.min(userData.points, 100)}%` }}
-            ></div>
+            <div className="bg-accent h-4 rounded-full" style={{ width: `${Math.min(userData.points, 100)}%` }}></div>
           </div>
         </div>
 
+        {/* Uploaded Videos */}
         <div className="mb-10">
           <h3 className="text-2xl font-semibold mb-3">📹 Uploaded Videos</h3>
           {userData.videos.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {userData.videos.map((video, index) => (
-                <div
-                  key={index}
-                  className="bg-white p-4 rounded-xl border border-accent text-accent shadow-md"
-                >
+                <div key={index} className="bg-white p-4 rounded-xl border border-accent text-accent shadow-md">
                   <div className="h-40 bg-gray-100 rounded-md mb-2 flex items-center justify-center text-sm text-gray-500">
                     Thumbnail Placeholder
                   </div>
                   <h4 className="font-semibold">{video.title}</h4>
-                  <p className="text-sm text-gray-600">
-                    Uploaded on:{" "}
-                    {new Date(video.uploadedAt).toLocaleDateString()}
-                  </p>
+                  <p className="text-sm text-gray-600">Uploaded on: {new Date(video.uploadedAt).toLocaleDateString()}</p>
                 </div>
               ))}
             </div>
@@ -79,21 +63,45 @@ const Profilepage = () => {
           )}
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:justify-center gap-4">
+        {/* Buttons */}
+        <div className="flex flex-col sm:flex-row sm:justify-center gap-4 mb-10">
           <button
-            onClick={() => navigate("/leaderboard")}
-            className="bg-accent text-white font-medium px-6 py-3 rounded-xl hover:bg-secondary transition-all duration-300"
+            onClick={() => setActiveSection("leaderboard")}
+            className={`font-medium px-6 py-3 rounded-xl transition-all duration-300 ${
+              activeSection === "leaderboard"
+                ? "bg-accent text-white"
+                : "bg-white text-accent border-2 border-accent hover:bg-accent hover:text-white"
+            }`}
           >
             🏆 View Leaderboard
           </button>
 
           <button
-            onClick={() => navigate("/points-info")}
-            className="bg-white text-accent border-2 border-accent font-medium px-6 py-3 rounded-xl hover:bg-accent hover:text-white transition-all duration-300"
+            onClick={() => setActiveSection("points")}
+            className={`font-medium px-6 py-3 rounded-xl transition-all duration-300 ${
+              activeSection === "points"
+                ? "bg-accent text-white"
+                : "bg-white text-accent border-2 border-accent hover:bg-accent hover:text-white"
+            }`}
           >
             📈 How Points Are Awarded
           </button>
         </div>
+
+        {/* Conditionally Rendered Section */}
+        {activeSection === "leaderboard" && (
+          <div className="mt-10">
+            <h3 className="text-2xl font-semibold mb-4 text-center">🏆 Global Leaderboard</h3>
+            <Board />
+          </div>
+        )}
+
+        {activeSection === "points" && (
+          <div className="mt-10 text-center text-accent">
+            <h3 className="text-2xl font-semibold mb-4">📊 Points Distribution</h3>
+            <p>This section will explain how points are awarded. Content coming soon!</p>
+          </div>
+        )}
       </div>
     </div>
   );

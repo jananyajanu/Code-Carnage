@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import axios from "../api/axiosInstance";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -11,7 +11,7 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("/api/users/login", { email, password });
+      const res = await axios.post("/user/login", { email, password });
       localStorage.setItem("userToken", res.data.token);
       navigate("/home");
     } catch (err) {
@@ -69,7 +69,10 @@ const SignIn = () => {
 
         <p className="mt-4 text-center text-sm text-gray-600">
           Not registered?{" "}
-          <Link to="/signup" className="text-green-700 font-medium hover:underline">
+          <Link
+            to="/signup"
+            className="text-green-700 font-medium hover:underline"
+          >
             Sign up here
           </Link>
         </p>

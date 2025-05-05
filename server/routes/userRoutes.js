@@ -21,15 +21,5 @@ router.post("/role", updateUserRole); // Consider: protect, isAdmin
 router.get("/profile", protect, getUserProfile);
 router.post("/updatePoints", protect, updateUserPoints); // Make sure updateUserPoints in controller accepts req.user
 
-
-// Define the updateUserPoints function
-const updateUserPoints = async (userId, points) => {
-  try {
-    await User.findByIdAndUpdate(userId, { $inc: { points: points } });
-  } catch (err) {
-    console.log("Error updating points:", err);
-  }
-};
-
 // Export router and the updateUserPoints function together
 module.exports = { userRoutes: router, updateUserPoints };

@@ -2,6 +2,11 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 exports.protect = async (req, res, next) => {
+  if (process.env.NODE_ENV === "development") {
+    req.user = { _id: "6637fbc5d8d8a3fa2a123456" }; // mock user ID
+    return next();
+  }
+
   let token = req.headers.authorization?.split(" ")[1];
 
   if (!token)

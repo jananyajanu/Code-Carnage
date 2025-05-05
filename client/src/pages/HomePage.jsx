@@ -1,43 +1,96 @@
-import React from "react";
-import logo from "../assets/logo.jpg";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import axiosInstance from "../api/axiosInstance";
 
-function HomePage() {
+const HomePage = () => {
+  const [videos, setVideos] = useState([]);
+  const [error, setError] = useState("");
+
+  const handleLike = async (videoId) => {
+    try {
+      const res = await axiosInstance.post(`/videos/${videoId}/like`);
+      setVideos((prevVideos) =>
+        prevVideos.map((video) =>
+          video._id === videoId
+            ? {
+                ...video,
+                likes: res.data.likes,
+                alreadyLiked: res.data.alreadyLiked,
+              }
+            : video
+        )
+      );
+    } catch (err) {
+      console.error("Error updating like status", err);
+    }
+  };
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const res = await axiosInstance.get("/videos");
+        const currentUserId = "6637fbc5d8d8a3fa2a123456"; // example user
+        const sortedVideos = res.data
+          .map((video) => ({
+            ...video,
+            alreadyLiked: video.likes?.includes(currentUserId),
+          }))
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // recent first
+
+        setVideos(sortedVideos);
+      } catch (err) {
+        console.error("Error fetching videos:", err);
+        setError("Failed to load videos. Please try again later.");
+      }
+    };
+
+    fetchVideos();
+  }, []);
+
   return (
-    <div className="min-h-screen pb-24 relative overflow-x-hidden bg-slate-900 text-white px-4 sm:px-8">
-      <img
-        src={logo}
-        alt="Logo"
-        className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-5 w-3/4 sm:w-2/3 z-0"
-      />
+    <div className="min-h-screen bg-[#e6f4ea] p-4 mb-10">
+      <h1 className="text-3xl text-green-800 font-semibold text-center mb-6">
+        Latest Climate Videos
+      </h1>
 
-      <div className="pt-28 text-center relative z-10">
-        <h2 className="font-bold text-3xl mb-3">
-          <span role="img" aria-label="seedling">🌱</span> Weekly Challenge
-        </h2>
-        <p className="text-lg">
-          This week: <span className="text-emerald-400 font-semibold">Reduce plastic usage!</span> Share your story{" "}
-          <span role="img" aria-label="earth">🌍</span>
-        </p>
-      </div>
+      {error && <p className="text-red-600 text-center mb-4">{error}</p>}
 
-      <div className="bg-slate-800 rounded-xl mt-10 p-6 relative z-10 max-w-3xl mx-auto shadow-lg">
-        <h3 className="text-2xl font-semibold mb-2">About Us</h3>
-        <p className="text-base leading-relaxed">
-          Our platform empowers students and schools to share 60-second sustainability stories — from recycling tips to eco initiatives.
-          Join the movement to make climate literacy fun and impactful!
-        </p>
-      </div>
-
-      {/* Bottom Navigation Footer */}
-      <div className="fixed bottom-0 left-0 right-0 bg-slate-800 text-white flex justify-around items-center py-3 shadow-inner z-20">
-        <Link to="/" className="hover:text-emerald-400 font-medium">Home</Link>
-        <Link to="/challenges" className="hover:text-emerald-400 font-medium">Challenges</Link>
-        <Link to="/videofeed" className="hover:text-emerald-400 font-medium">VideoFeed</Link>
-        <Link to="/profile" className="hover:text-emerald-400 font-medium">Profile</Link>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {videos.map((video) => (
+          <div key={video._id} className="bg-white shadow-md rounded-lg p-4">
+            <video
+              src={video.videoUrl}
+              controls
+              className="w-full h-64 object-cover rounded-md mb-3"
+            ></video>
+            <h2 className="text-xl font-semibold text-[#1b5e20]">
+              {video.title}
+            </h2>
+            <p className="text-gray-700 mt-1">{video.description}</p>
+            <p className="text-green-600 text-sm font-medium mt-1">
+              #{video.topic}
+            </p>
+            <p className="text-gray-500 text-xs mb-2">
+              Uploaded by: {video.uploadedBy?.username || "Unknown"}
+            </p>
+            <div className="flex justify-between items-center mt-2">
+              <button
+                onClick={() => handleLike(video._id)}
+                className={`text-sm px-3 py-1 rounded transition 
+                ${
+                  video.alreadyLiked
+                    ? "bg-red-500 hover:bg-red-600"
+                    : "bg-[#34a853] hover:bg-[#1b5e20]"
+                } 
+                text-white`}
+              >
+                {video.alreadyLiked ? "❤️" : "👍"} {video.likes ?? 0}
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
-}
+};
 
 export default HomePage;

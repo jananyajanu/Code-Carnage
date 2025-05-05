@@ -8,7 +8,7 @@ const generateToken = (id) => {
 
 // @desc    Register new user
 // @route   POST /api/users/register
-exports.registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
   const { username, email, password, role } = req.body;
 
   try {
@@ -33,7 +33,7 @@ exports.registerUser = async (req, res) => {
 
 // @desc    Login user
 // @route   POST /api/users/login
-exports.loginUser = async (req, res) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -57,7 +57,7 @@ exports.loginUser = async (req, res) => {
 // @desc    Get user profile
 // @route   GET /api/users/profile
 // @access  Private
-exports.getUserProfile = async (req, res) => {
+const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id)
       .populate("videos")
@@ -80,7 +80,7 @@ exports.getUserProfile = async (req, res) => {
 // @desc    Update user role
 // @route   POST /api/users/role
 // @access  Public or Private (depending on your use case)
-exports.updateUserRole = async (req, res) => {
+const updateUserRole = async (req, res) => {
   const { userId, role } = req.body;
 
   try {
@@ -108,14 +108,32 @@ exports.updateUserRole = async (req, res) => {
 // @desc    Update user points
 // @route   POST /api/users/updatePoints
 // @access  Private
-exports.updateUserPoints = async (req, res) => {
-  const { points } = req.body;
-
+const updateUserPoints = async (req, res) => {
   try {
-    await User.findByIdAndUpdate(req.user._id, { $inc: { points: points } });
-    res.status(200).json({ message: "Points updated successfully" });
+    const userId = req.user._id;
+    const { points } = req.body;
+
+    if (!points) {
+      return res.status(400).json({ message: "Points are required" });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $inc: { points: points } },
+      { new: true }
+    );
+
+    res.status(200).json({ message: "Points updated", user });
   } catch (err) {
-    console.log("Error updating points:", err);
-    res.status(500).json({ message: "Server error updating points" });
+    console.error("Error updating points:", err);
+    res.status(500).json({ message: "Server error", error: err });
   }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  getUserProfile,
+  updateUserRole,
+  updateUserPoints, // ✅ Now it’s actually defined
 };

@@ -19,11 +19,12 @@ function Navbar({ children }) {
           </Link>
 
           {/* Message Icon */}
-          <Link to="/messages"
-          className="text-gray-600 hover:text-green-600"
-          aria-label="Messages"
+          <Link
+            to="/messages"
+            className="text-gray-600 hover:text-green-600"
+            aria-label="Messages"
           >
-          <i className="fas fa-comment-dots fa-2x"></i>
+            <i className="fas fa-comment-dots fa-2x"></i>
           </Link>
         </div>
       </header>
@@ -45,8 +46,8 @@ function Navbar({ children }) {
 
           {/* Post */}
           <Link
-            to="/post"
-            className="flex flex-col items-center text-accent hover:text-secondary"
+            to="/UploadVideo"
+            className="flex flex-col items-center text-gray-500 hover:text-green-600"
           >
             <i className="fas fa-edit text-xl mb-1"></i>
             <span className="text-xs">Post</span>

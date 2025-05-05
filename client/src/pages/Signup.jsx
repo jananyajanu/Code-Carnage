@@ -25,7 +25,7 @@ const Signup = () => {
     }
 
     try {
-      await axios.post("/api/users/register", {
+      await axios.post("/user/register", {
         username: formData.username,
         email: formData.email,
         password: formData.password,

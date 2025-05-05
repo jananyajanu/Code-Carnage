@@ -38,7 +38,7 @@
 
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import PrivateRoute from "./components/PrivateRoute.jsx";
+// import PrivateRoute from "./components/PrivateRoute.jsx";
 import Homepage from "./pages/HomePage.jsx";
 import UploadVideo from "./pages/UploadVideo.jsx";
 import Profile from "./pages/Profile.jsx"; // ⬅️ Import Profile page
@@ -55,7 +55,7 @@ function App() {
         
         
         <Route path="/UploadVideo" element={<UploadVideo />} />
-        <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/home" element={<Homepage />} /> 
       </Routes>
     </div>

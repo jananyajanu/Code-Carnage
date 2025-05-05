@@ -1,121 +1,116 @@
-const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const User = require("../models/User");
 
-// Generate JWT
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
-};
-
-// @desc    Register new user
-// @route   POST /api/users/register
+// Register a new user
 exports.registerUser = async (req, res) => {
-  const { username, email, password, role } = req.body;
+  const { name, email, password } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
-    if (userExists)
+    if (userExists) {
       return res.status(400).json({ message: "User already exists" });
+    }
 
-    const user = await User.create({ username, email, password, role });
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     res.status(201).json({
       _id: user._id,
-      username: user.username,
+      name: user.name,
       email: user.email,
-      role: user.role,
-      token: generateToken(user._id),
+      token,
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Registration failed" });
+  } catch (error) {
+    console.error("Register Error:", error);
+    res.status(500).json({ message: "Server error during registration" });
   }
 };
 
-// @desc    Login user
-// @route   POST /api/users/login
+// Login user
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
-    if (!user || !(await user.matchPassword(password))) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+    if (!user) return res.status(400).json({ message: "Invalid email" });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ message: "Invalid password" });
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     res.json({
       _id: user._id,
-      username: user.username,
+      name: user.name,
       email: user.email,
-      role: user.role,
-      token: generateToken(user._id),
+      token,
     });
-  } catch (err) {
-    res.status(500).json({ message: "Login failed" });
+  } catch (error) {
+    console.error("Login Error:", error);
+    res.status(500).json({ message: "Server error during login" });
   }
 };
 
-// @desc    Get user profile
-// @route   GET /api/users/profile
-// @access  Private
+// Get profile
 exports.getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id)
-      .populate("videos")
-      .select("-password");
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.json({
-      name: user.username,
-      email: user.email,
-      videos: user.videos,
-    });
-  } catch (err) {
-    res.status(500).json({ message: "Server error while fetching profile" });
+    const user = await User.findById(req.user._id).select("-password");
+    res.json(user);
+  } catch (error) {
+    console.error("Get profile error:", error);
+    res.status(500).json({ message: "Error fetching profile" });
   }
 };
 
-// @desc    Update user role
-// @route   POST /api/users/role
-// @access  Public or Private (depending on your use case)
+// Update role
 exports.updateUserRole = async (req, res) => {
   const { userId, role } = req.body;
 
   try {
-    const user = await User.findByIdAndUpdate(userId, { role }, { new: true });
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    user.role = role;
+    await user.save();
 
-    res.json({
-      message: "Role updated successfully",
-      user: {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-      },
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to update role" });
+    res.status(200).json({ message: "Role updated successfully" });
+  } catch (error) {
+    console.error("Update role error:", error);
+    res.status(500).json({ message: "Server error updating role" });
   }
 };
 
-// @desc    Update user points
-// @route   POST /api/users/updatePoints
-// @access  Private
+// Update points via route
 exports.updateUserPoints = async (req, res) => {
   const { points } = req.body;
 
   try {
-    await User.findByIdAndUpdate(req.user._id, { $inc: { points: points } });
+    await User.findByIdAndUpdate(req.user._id, { $inc: { points } });
     res.status(200).json({ message: "Points updated successfully" });
   } catch (err) {
     console.log("Error updating points:", err);
     res.status(500).json({ message: "Server error updating points" });
+  }
+};
+
+// Reusable for other modules
+exports.updateUserPointsInDatabase = async (userId, points) => {
+  try {
+    await User.findByIdAndUpdate(userId, { $inc: { points } });
+  } catch (err) {
+    console.error("Error in updateUserPointsInDatabase:", err);
+    throw err;
   }
 };

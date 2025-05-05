@@ -27,7 +27,7 @@ const Profilepage = () => {
     );
 
   return (
-    <div className="bg-secondary min-h-screen py-10 px-4 sm:px-8 lg:px-20">
+    <div className="bg-green-100 min-h-screen py-10 px-4 sm:px-8 lg:px-20">
       <div className="max-w-3xl mx-auto bg-primary text-accent p-6 sm:p-10 rounded-3xl shadow-xl">
         <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-center">
           👤 User Profile

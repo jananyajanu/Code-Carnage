@@ -19,11 +19,6 @@ app.use(express.json()); // Parse incoming JSON
 const userRoutes = require("./routes/userRoutes");
 const videoRoutes = require("./routes/videoRoutes");
 const challengeRoutes = require("./routes/challengeRoutes");
-const { updateUserPoints } = require("./controllers/userController");
-
-
-// Import updateUserPoints from controller
-const { updateUserPoints } = require("./controllers/userController"); // ✅ Correct source
 
 // Test route
 app.get("/", (req, res) => {
@@ -32,16 +27,15 @@ app.get("/", (req, res) => {
 
 // API Routes
 app.use("/api/user", userRoutes);
-app.use("/api/videos", videoRoutes);
+// app.use("/api/videos", videoRoutes);
 app.use("/api/challenge", challengeRoutes);
-app.use("/api/leaderboard", leaderboardRoutes); // ✅ Optional, but useful
 
-// Update points endpoint
+// Update points endpoint (if needed outside userRoutes)
 app.post("/api/update-points", async (req, res) => {
   const { userId, points } = req.body;
 
   try {
-    await updateUserPoints(userId, points);
+    await updateUserPoints(userId, points); // If you need this endpoint, keep it
     res.status(200).send("Points updated successfully");
   } catch (err) {
     console.error("Error updating points:", err);

@@ -4,6 +4,7 @@ const {
   uploadVideo,
   getAllVideos,
   getVideoById,
+  likeVideo,
 } = require("../controllers/videoController");
 const { protect } = require("../middleware/authMiddleware");
 
@@ -17,5 +18,6 @@ router.post("/upload", protect, upload.single("video"), uploadVideo);
 // Publicly accessible routes for fetching videos
 router.get("/", getAllVideos);
 router.get("/:id", getVideoById);
+router.post("/:id/like", protect, likeVideo);
 
 module.exports = router;

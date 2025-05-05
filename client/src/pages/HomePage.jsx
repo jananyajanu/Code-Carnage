@@ -1,43 +1,106 @@
-import React from "react";
-import logo from "../assets/logo.jpg";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import axiosInstance from "../api/axiosInstance"; // Adjust the path to where axiosInstance is located
 
-function HomePage() {
+const Home = () => {
+  const [videos, setVideos] = useState([]);
+
+  // Fetch videos from the backend
+  const fetchVideos = async () => {
+    try {
+      const res = await axiosInstance.get("/videos"); // Using axiosInstance
+      setVideos(res.data); // Store videos in the state
+    } catch (err) {
+      console.error("Failed to fetch videos", err);
+    }
+  };
+
+  const handleLike = async (videoId) => {
+    try {
+      const res = await axiosInstance.post(`/videos/${videoId}/like`);
+      setVideos((prevVideos) =>
+        prevVideos.map((video) =>
+          video._id === videoId
+            ? {
+                ...video,
+                likes: res.data.likes, // number of likes
+                alreadyLiked: res.data.alreadyLiked, // toggle like status
+              }
+            : video
+        )
+      );
+    } catch (err) {
+      console.error("Error updating like status", err);
+    }
+  };
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const res = await axiosInstance.get("/videos"); // Fetch videos from backend
+        const currentUserId = "6637fbc5d8d8a3fa2a123456"; // Static dev-mode user ID
+
+        // Process and map videos to include like status and sorted by createdAt (newest first)
+        const videosWithLikeStatus = res.data
+          .map((video) => ({
+            ...video,
+            alreadyLiked: video.likes?.includes(currentUserId), // Check if the current user already liked this video
+          }))
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by createdAt, descending
+
+        setVideos(videosWithLikeStatus); // Set the sorted videos with like status
+      } catch (err) {
+        console.error("Failed to fetch videos", err);
+      }
+    };
+
+    fetchVideos(); // Call the function when the component mounts
+  }, []); // Empty dependency array to run this once when the component is first loaded
+
   return (
-    <div className="min-h-screen pb-24 relative overflow-x-hidden bg-slate-900 text-white px-4 sm:px-8">
-      <img
-        src={logo}
-        alt="Logo"
-        className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-5 w-3/4 sm:w-2/3 z-0"
-      />
+    <div className="p-6 bg-[#e6f4ea] min-h-screen mb-10">
+      <h1 className="text-3xl font-bold text-[#1b5e20] mb-6 text-center">
+        🌿 Climate Action Videos
+      </h1>
 
-      <div className="pt-28 text-center relative z-10">
-        <h2 className="font-bold text-3xl mb-3">
-          <span role="img" aria-label="seedling">🌱</span> Weekly Challenge
-        </h2>
-        <p className="text-lg">
-          This week: <span className="text-emerald-400 font-semibold">Reduce plastic usage!</span> Share your story{" "}
-          <span role="img" aria-label="earth">🌍</span>
-        </p>
-      </div>
-
-      <div className="bg-slate-800 rounded-xl mt-10 p-6 relative z-10 max-w-3xl mx-auto shadow-lg">
-        <h3 className="text-2xl font-semibold mb-2">About Us</h3>
-        <p className="text-base leading-relaxed">
-          Our platform empowers students and schools to share 60-second sustainability stories — from recycling tips to eco initiatives.
-          Join the movement to make climate literacy fun and impactful!
-        </p>
-      </div>
-
-      {/* Bottom Navigation Footer */}
-      <div className="fixed bottom-0 left-0 right-0 bg-slate-800 text-white flex justify-around items-center py-3 shadow-inner z-20">
-        <Link to="/" className="hover:text-emerald-400 font-medium">Home</Link>
-        <Link to="/challenges" className="hover:text-emerald-400 font-medium">Challenges</Link>
-        <Link to="/videofeed" className="hover:text-emerald-400 font-medium">VideoFeed</Link>
-        <Link to="/profile" className="hover:text-emerald-400 font-medium">Profile</Link>
+      <div className="grid gap-6 md:grid-cols-2">
+        {videos.map((video) => (
+          <div
+            key={video._id}
+            className="bg-white shadow-md border border-[#34a853] rounded-lg overflow-hidden"
+          >
+            <video
+              src={video.videoUrl}
+              controls
+              className="w-full h-64 object-cover"
+            ></video>
+            <div className="p-4">
+              <h2 className="text-xl font-semibold text-[#1b5e20]">
+                {video.title}
+              </h2>
+              <p className="text-gray-700 mt-1">{video.description}</p>
+              <div className="flex justify-between items-center mt-3">
+                <span className="text-sm text-gray-500">
+                  Topic: {video.topic}
+                </span>
+                <button
+                  onClick={() => handleLike(video._id)}
+                  className={`text-sm px-3 py-1 rounded transition 
+                  ${
+                    video.alreadyLiked
+                      ? "bg-red-500 hover:bg-red-600"
+                      : "bg-[#34a853] hover:bg-[#1b5e20]"
+                  } 
+                  text-white`}
+                >
+                  {video.alreadyLiked ? "❤️" : "👍"} {video.likes ?? 0}
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
-}
+};
 
-export default HomePage;
+export default Home;

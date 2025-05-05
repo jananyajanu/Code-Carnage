@@ -30,8 +30,13 @@ app.get("/", (req, res) => {
   res.send("🌍 Climate Platform Backend is running...");
 });
 
+<<<<<<< HEAD
 // API Routes
 app.use("/api/user", userRoutes);
+=======
+// Your routes (plug these in once you’re ready)
+app.use("/api/users", userRoutes);  // Add this line to use the userRoutes
+>>>>>>> 40212e6 (updated signup)
 app.use("/api/videos", videoRoutes);
 app.use("/api/challenge", challengeRoutes);
 app.use("/api/leaderboard", leaderboardRoutes); // ✅ Optional, but useful

@@ -1,34 +1,19 @@
-const express = require("express");
+const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const {
-  registerUser,
-  loginUser,
-  getUserProfile,
-  updateUserRole,
-} = require("../controllers/userController");
 
-const { protect } = require("../middleware/authMiddleware");
+const protect = async (req, res, next) => {
+  let token = req.headers.authorization?.split(" ")[1];
 
-const router = express.Router();
+  if (!token)
+    return res.status(401).json({ message: "Not authorized, no token" });
 
-// Public Routes
-router.post("/register", registerUser);
-router.post("/login", loginUser);
-
-// Role update (either public or protected depending on how you want it)
-router.post("/role", updateUserRole);
-
-// Protected Route
-router.get("/profile", protect, getUserProfile);
-
-// Define the updateUserPoints function
-const updateUserPoints = async (userId, points) => {
   try {
-    await User.findByIdAndUpdate(userId, { $inc: { points: points } });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id).select("-password");
+    next();
   } catch (err) {
-    console.log("Error updating points:", err);
+    res.status(401).json({ message: "Invalid token" });
   }
 };
 
-// Export router and the updateUserPoints function together
-module.exports = { router, updateUserPoints };
+module.exports = { protect }; // ✅ this is necessary for named import

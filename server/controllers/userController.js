@@ -59,7 +59,9 @@ exports.loginUser = async (req, res) => {
 // @access  Private
 exports.getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).populate("videos").select("-password");
+    const user = await User.findById(req.user._id)
+      .populate("videos")
+      .select("-password");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -104,12 +106,16 @@ exports.updateUserRole = async (req, res) => {
 };
 
 // @desc    Update user points
-// @route   POST /api/users/points
+// @route   POST /api/users/updatePoints
 // @access  Private
-module.exports.updateUserPoints = async (userId, points) => {
+exports.updateUserPoints = async (req, res) => {
+  const { points } = req.body;
+
   try {
-    await User.findByIdAndUpdate(userId, { $inc: { points: points } });
+    await User.findByIdAndUpdate(req.user._id, { $inc: { points: points } });
+    res.status(200).json({ message: "Points updated successfully" });
   } catch (err) {
     console.log("Error updating points:", err);
+    res.status(500).json({ message: "Server error updating points" });
   }
 };

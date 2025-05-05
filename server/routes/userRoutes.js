@@ -1,19 +1,24 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const express = require("express");
+const {
+  registerUser,
+  loginUser,
+  getUserProfile,
+  updateUserRole,
+  updateUserPoints,
+} = require("../controllers/userController");
+const { protect } = require("../middleware/authMiddleware");
 
-const protect = async (req, res, next) => {
-  let token = req.headers.authorization?.split(" ")[1];
+const router = express.Router();
 
-  if (!token)
-    return res.status(401).json({ message: "Not authorized, no token" });
+// Public Routes
+router.post("/register", registerUser);
+router.post("/login", loginUser);
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.id).select("-password");
-    next();
-  } catch (err) {
-    res.status(401).json({ message: "Invalid token" });
-  }
-};
+// Admin Route to update role — ideally this should be protected in future
+router.post("/role", updateUserRole); // Consider: protect, isAdmin
 
-module.exports = { protect }; // ✅ this is necessary for named import
+// Protected Routes
+router.get("/profile", protect, getUserProfile);
+router.post("/updatePoints", protect, updateUserPoints); // Make sure updateUserPoints in controller accepts req.user
+
+module.exports = router;

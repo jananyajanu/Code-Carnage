@@ -7,7 +7,9 @@
     "react-bootstrap": "^2.10.9",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.30.0",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "socket.io-client": "^4.8.1",
+    "uuid": "^11.1.0"
   },
   "scripts": {
     "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider react-scripts start",

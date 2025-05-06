@@ -47,6 +47,8 @@ import Signup from "./pages/Signup.jsx";
 import Challenges from "./pages/Challenges.jsx"; 
 import HomePage from "./pages/HomePage.jsx";
 
+import Messages from "./pages/Messages"; ;
+
 function App() {                                
   return (
     <div className="min-h-screen bg-primary text-white">
@@ -63,6 +65,9 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/home" element={<HomePage />} />
         {/* <Route path="/signin" element={<SignIn />} /> */}
+        
+        <Route path="/messages" element={<Messages />} />
+        
         <Route path="/UploadVideo" element={<UploadVideo />} />
         {/* <Route path="/post" element={<UploadVideo />} />  */}
         <Route path="/profile" element={<Profile />} />

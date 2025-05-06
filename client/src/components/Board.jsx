@@ -1,15 +1,24 @@
 // src/Leaderboard/Board.js
-import React, { useState } from "react";
-import { leaderboardData } from "./database"; // static data
+import axios from "../api/axiosInstance";
+import React, { useEffect, useState } from "react";
 
 const Board = () => {
   const [filter, setFilter] = useState("all");
+  const [leaderboardData, setLeaderboardData] = useState([]);
 
-  const filteredData = leaderboardData.filter((user) => {
-    if (filter === "7") return user.timeframe === "7";
-    if (filter === "30") return user.timeframe === "30";
-    return true;
-  });
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const range = filter === "all" ? "" : `?range=${filter}`;
+        const res = await axios.get(`/user/leaderboard${range}`);
+        setLeaderboardData(res.data);
+      } catch (err) {
+        console.error("Failed to fetch leaderboard:", err);
+      }
+    };
+
+    fetchLeaderboard();
+  }, [filter]);
 
   return (
     <div className="bg-primary p-6 rounded-2xl shadow-lg text-accent">
@@ -30,7 +39,7 @@ const Board = () => {
       </div>
 
       <ul className="space-y-4">
-        {filteredData.map((user, index) => (
+        {leaderboardData.map((user, index) => (
           <li
             key={index}
             className="flex justify-between items-center bg-white p-4 rounded-xl border border-accent shadow-md"
@@ -41,12 +50,14 @@ const Board = () => {
               </span>
               <div>
                 <p className="text-base font-semibold text-accent">
-                  {user.name}
+                  {user.username || user.name}
                 </p>
                 <p className="text-sm text-gray-600">{user.email}</p>
               </div>
             </div>
-            <p className="text-lg font-bold text-accent">{user.points} pts</p>
+            <p className="text-lg font-bold text-accent">
+              {user.points || user.totalPoints} pts
+            </p>
           </li>
         ))}
       </ul>

@@ -1,29 +1,28 @@
 const Video = require("../models/Video");
 const cloudinary = require("../config/cloudinary");
+const User = require("../models/User");
 
 // @desc    Upload video
 // @route   POST /api/videos/upload
 // @access  Private
 exports.uploadVideo = async (req, res) => {
-  // Inside uploadVideo controller (only in development!)
-  const fakeDevUserId = "6637fbc5d8d8a3fa2a123456"; // your real user _id from DB
+  // Fake user ID in development
+  const fakeDevUserId = "6637fbc5d8d8a3fa2a123456";
   const userId =
     process.env.NODE_ENV === "development" ? fakeDevUserId : req.user._id;
 
   const { title, description, topic } = req.body;
+  const file = req.file;
 
-  // Ensure the necessary fields are present
   if (!title || !description || !topic) {
     return res
       .status(400)
       .json({ message: "Title, description, and topic are required" });
   }
 
-  try {
-    if (!req.file)
-      return res.status(400).json({ message: "No video file uploaded" });
+  if (!file) return res.status(400).json({ message: "No file uploaded" });
 
-    // Upload video to Cloudinary
+  try {
     cloudinary.uploader
       .upload_stream(
         { resource_type: "video", folder: "climate-videos" },
@@ -33,19 +32,21 @@ exports.uploadVideo = async (req, res) => {
               .status(500)
               .json({ message: "Cloudinary upload failed", error });
 
-          // Create new video entry in the database
+          // ✅ Use consistent userId here
           const newVideo = new Video({
             title,
             description,
             topic,
-            videoUrl: result.secure_url, // Cloudinary URL of the uploaded video
-            uploadedBy: req.user._id,
+            videoUrl: result.secure_url,
+            uploadedBy: userId,
           });
 
-          // Save the new video in the database
           await newVideo.save();
 
-          // Return the newly created video data
+          await User.findByIdAndUpdate(userId, {
+            $push: { videos: newVideo._id },
+          });
+
           res.status(201).json(newVideo);
         }
       )

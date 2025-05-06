@@ -5,6 +5,7 @@ const {
   getUserProfile,
   // updateUserRole,
   updateUserPoints,
+  getLeaderboard,
 } = require("../controllers/userController");
 const { protect, isAdmin } = require("../middleware/authMiddleware");
 
@@ -28,6 +29,9 @@ router.post("/updatePoints", protect, updateUserPoints); // Make sure updateUser
 // Public Routes
 router.post("/register", registerUser); // User registration
 router.post("/login", loginUser); // User login
+
+// Public leaderboard route
+router.get("/leaderboard", getLeaderboard);
 
 // Admin Route to update role — protected by admin middleware
 // router.post("/role", protect, isAdmin, updateUserRole); // Added isAdmin check for admin-only route

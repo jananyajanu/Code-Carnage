@@ -10,7 +10,7 @@ const generateToken = (id) => {
 // @desc    Register new user
 // @route   POST /api/users/register
 const registerUser = async (req, res) => {
-  const { username, email, password, role } = req.body;
+  const { name, email, password, role } = req.body;
 
   try {
     const userExists = await User.findOne({ email });
@@ -24,16 +24,16 @@ const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      role, // Include role in creation
     });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = generateToken(user._id);
 
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
+      role: user.role,
       token,
     });
   } catch (error) {
@@ -54,14 +54,13 @@ const loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: "Invalid password" });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = generateToken(user._id);
 
     res.json({
       _id: user._id,
       name: user.name,
       email: user.email,
+      role: user.role,
       token,
     });
   } catch (error) {
@@ -85,7 +84,6 @@ const getUserProfile = async (req, res) => {
 
 // @desc    Update user role
 // @route   POST /api/users/role
-// @access  Public or Private (depending on your use case)
 const updateUserRole = async (req, res) => {
   const { userId, role } = req.body;
 
@@ -129,18 +127,20 @@ const updateUserPoints = async (req, res) => {
 };
 
 // Reusable for other modules
-exports.updateUserPointsInDatabase = async (userId, points) => {
+const updateUserPointsInDatabase = async (userId, points) => {
   try {
     await User.findByIdAndUpdate(userId, { $inc: { points } });
   } catch (err) {
     console.error("Error in updateUserPointsInDatabase:", err);
     throw err;
   }
-}
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getUserProfile,
   updateUserRole,
-  updateUserPoints, // ✅ Now it’s actually defined
+  updateUserPoints,
+  updateUserPointsInDatabase, // ✅ Added to exports
 };

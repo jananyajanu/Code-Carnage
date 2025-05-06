@@ -58,7 +58,7 @@ function App() {
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} /> */}
         <Route path="/challenges" element={<Challenges />} /> Route for Challenges page
 
-        <Route path="/" element={<SignIn />} />
+        <Route path="/" element={<Homepage />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<Signup />} />
         

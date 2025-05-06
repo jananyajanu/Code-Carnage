@@ -1,7 +1,7 @@
-const User = require("../models/User");
+const User = require("../models/User"); // Ensure path is correct
 const jwt = require("jsonwebtoken");
 
-// Generate JWT
+// Generate JWT Token
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
@@ -50,6 +50,7 @@ const loginUser = async (req, res) => {
       token: generateToken(user._id),
     });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Login failed" });
   }
 };
@@ -68,40 +69,14 @@ const getUserProfile = async (req, res) => {
     }
 
     res.json({
-      name: user.username,
+      name: user.username, // Use 'username' as per your model
       email: user.email,
-      videos: user.videos,
+      points: user.points,
+      videos: user.videos || [], // Return an empty array if no videos
     });
   } catch (err) {
+    console.error("Error in getUserProfile:", err);
     res.status(500).json({ message: "Server error while fetching profile" });
-  }
-};
-
-// @desc    Update user role
-// @route   POST /api/users/role
-// @access  Public or Private (depending on your use case)
-const updateUserRole = async (req, res) => {
-  const { userId, role } = req.body;
-
-  try {
-    const user = await User.findByIdAndUpdate(userId, { role }, { new: true });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.json({
-      message: "Role updated successfully",
-      user: {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-      },
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to update role" });
   }
 };
 
@@ -134,6 +109,5 @@ module.exports = {
   registerUser,
   loginUser,
   getUserProfile,
-  updateUserRole,
-  updateUserPoints, // ✅ Now it’s actually defined
+  updateUserPoints,
 };

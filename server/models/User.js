@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema(
     role: { type: String, enum: ["user", "admin"], default: "user" },
     points: { type: Number, default: 0 }, // Field to store points
     badges: [{ type: String }], // Array to store badges
+    videos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }],
   },
   { timestamps: true }
 );

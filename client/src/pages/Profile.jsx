@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "../api/axiosInstance";
-import Board from "../components/Leaderboard/Board";
+import Board from "../components/Board";
 import PointsInfo from "../components/PointsInfo";
 
 const Profilepage = () => {

@@ -116,9 +116,27 @@ const updateUserPoints = async (req, res) => {
   }
 };
 
+// @desc    Get top 10 users by points
+// @route   GET /user/leaderboard
+// @access  Public
+const getLeaderboard = async (req, res) => {
+  try {
+    const topUsers = await User.find()
+      .sort({ points: -1 }) // highest to lowest
+      .limit(10)
+      .select("username email points"); // Only return needed fields
+
+    res.json(topUsers);
+  } catch (err) {
+    console.error("Error fetching leaderboard:", err);
+    res.status(500).json({ message: "Failed to fetch leaderboard" });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getUserProfile,
   updateUserPoints,
+  getLeaderboard,
 };

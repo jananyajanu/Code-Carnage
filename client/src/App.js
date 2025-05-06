@@ -51,9 +51,14 @@ function App() {
   return (
     <div className="min-h-screen bg-primary text-white">
       <Routes>
-        <Route path="/" element={<SignIn />} /> {/* 👈 Now Homepage is the default */}
-        <Route path="/home" element={<Homepage />} />
-        <Route path="/signup" element={<Signup />} />
+        {/* <Route path="/" element={<Homepage />} /> 👈 Now Homepage is the default */}
+        {/* <Route path="/Homepage" element={<Homepage />} />
+        <Route path="/UploadVideo" element={<UploadVideo />} />
+        <Route path="/post" element={<UploadVideo />} /> 
+        <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} /> */}
+        <Route path="/challenges" element={<Challenges />} /> Route for Challenges page
+
+        <Route path="/" element={<SignIn />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<Signup />} />
         {/* <Route path="/signin" element={<SignIn />} /> */}

@@ -37,7 +37,7 @@ function Navbar({ children }) {
         <div className="flex justify-around items-center h-16">
           {/* Home */}
           <Link
-            to="/"
+            to="/home"
             className="flex flex-col items-center text-accent hover:text-secondary"
           >
             <i className="fas fa-home text-xl mb-1"></i>

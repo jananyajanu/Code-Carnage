@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    username: "",
+    name: "",               // changed from 'username' to 'name'
     email: "",
     password: "",
     confirmPassword: "",
@@ -26,7 +26,7 @@ const Signup = () => {
 
     try {
       await axios.post("/user/register", {
-        username: formData.username,
+        name: formData.name,    // changed from 'username' to 'name'
         email: formData.email,
         password: formData.password,
         role: "user",
@@ -53,11 +53,11 @@ const Signup = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-700">Username</label>
+            <label className="block text-gray-700">Name</label>
             <input
               type="text"
-              name="username"
-              value={formData.username}
+              name="name"               // changed from 'username' to 'name'
+              value={formData.name}     // changed from 'formData.username' to 'formData.name'
               onChange={handleChange}
               required
               className="w-full px-4 py-2 border border-gray-300 rounded text-green-700 bg-green-50 focus:outline-none focus:ring focus:ring-green-200"

@@ -38,14 +38,14 @@
 
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-// import PrivateRoute from "./components/PrivateRoute.jsx";
-import Homepage from "./pages/HomePage.jsx";
+// import PrivateRoute from "./components/PrivateRoute.jsx"
 import UploadVideo from "./pages/UploadVideo.jsx";
 import Profile from "./pages/Profile.jsx"; // ⬅️ Import Profile page
 import SignIn from "./pages/Signin.jsx";
 import Signup from "./pages/Signup.jsx";
 // import SignIn from "./pages/Signin.jsx";
 import Challenges from "./pages/Challenges.jsx"; 
+import HomePage from "./pages/HomePage.jsx";
 
 function App() {                                
   return (
@@ -61,6 +61,7 @@ function App() {
         <Route path="/" element={<SignIn />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/home" element={<HomePage />} />
         {/* <Route path="/signin" element={<SignIn />} /> */}
         <Route path="/UploadVideo" element={<UploadVideo />} />
         {/* <Route path="/post" element={<UploadVideo />} />  */}

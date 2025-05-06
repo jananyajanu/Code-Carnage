@@ -6,8 +6,8 @@ import PointsInfo from "../components/PointsInfo";
 const Profilepage = () => {
   const [userData, setUserData] = useState(null);
   const [activeSection, setActiveSection] = useState("none");
-  const [loading, setLoading] = useState(true); // To track loading state
-  const [error, setError] = useState(null); // To track error state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -23,12 +23,13 @@ const Profilepage = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
+        console.log(response.data);
         setUserData(response.data);
       } catch (error) {
         console.error("Error fetching user profile:", error);
         setError("There was an issue fetching your profile.");
       } finally {
-        setLoading(false); // Set loading to false after fetch attempt
+        setLoading(false);
       }
     };
 
@@ -37,14 +38,14 @@ const Profilepage = () => {
 
   if (loading) {
     return (
-      <p className="text-center text-lg text-gray-600 mt-10">Loading...</p> // Show loading message
+      <p className="text-center text-lg text-gray-600 mt-10">Loading...</p>
     );
   }
 
   if (error) {
     return (
       <div className="text-center text-lg text-red-600 mt-10">
-        <p>{error}</p> {/* Show error message */}
+        <p>{error}</p>
       </div>
     );
   }
@@ -85,9 +86,9 @@ const Profilepage = () => {
                   key={index}
                   className="bg-white p-4 rounded-xl border border-accent text-accent shadow-md"
                 >
-                  {video.url ? (
+                  {video.videoUrl ? (
                     <video
-                      src={video.url}
+                      src={video.videoUrl}
                       controls
                       className="rounded-md w-full h-40 object-cover mb-2"
                     />
